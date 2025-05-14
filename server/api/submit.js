@@ -1,5 +1,4 @@
 import { google } from "googleapis";
-import path from "path";
 
 export default defineEventHandler(async (event) => {
   const body = await readBody(event);
@@ -16,7 +15,7 @@ export default defineEventHandler(async (event) => {
   const client = await auth.getClient();
   const sheets = google.sheets({ version: "v4", auth: client });
 
-  const spreadsheetId = "1t6MTxZI20uEqqUTHRY7qnM4G-AzEr_GZevfaON5kzxM";
+  const spreadsheetId = process.env.SPREAD_SHEET_ID;
   const range = "Sheet1!A2:D"; // Adjust range if your sheet is named differently
 
   const values = [
