@@ -1,5 +1,10 @@
 <template>
   <div class="home-page flex-center">
+    <div v-if="loading" class="loading">Submitting...</div>
+    <div v-if="submitSuccess" class="success-message">
+      Form submitted successfully!
+    </div>
+    <div v-if="submitError" class="error-message">Error: {{ submitError }}</div>
     <form @submit.prevent="submitForm" class="form">
       <input
         v-model="form.name"
@@ -25,14 +30,17 @@
         placeholder="email..."
         required
       />
-      <input
-        v-model="form.subscribe"
-        type="checkbox"
-        name="some question"
-        class="input"
-        required
-      />
-      <button class="button" @submit.prevent="submitForm">Submit</button>
+      <div class="checkbox-container">
+        <input
+          v-model="form.subscribe"
+          type="checkbox"
+          id="subscribe"
+          name="subscribe"
+          class="checkbox-input"
+        />
+        <label for="subscribe">Subscribe to newsletter</label>
+      </div>
+      <button type="submit" class="button">Submit</button>
     </form>
   </div>
 </template>
@@ -40,9 +48,7 @@
 <script setup>
 import { allRows } from "@/composables/useSheet";
 
-const { data } = await allRows().then((res) => {
-  console.log("res", res);
-});
+const { data } = await allRows();
 
 const form = reactive({
   name: "",
@@ -51,15 +57,48 @@ const form = reactive({
   subscribe: false,
 });
 
-const submitForm = () => {
-  console.log("Form submitted:", form);
+const loading = ref(false);
+const submitSuccess = ref(false);
+const submitError = ref(null);
 
-  form.value = {
-    name: "",
-    lastName: "",
-    email: "",
-    subscribe: false,
-  };
+const submitForm = async () => {
+  try {
+    loading.value = true;
+    submitError.value = null;
+
+    // Send data to our server API endpoint
+    const { data, error } = await useFetch("/api/submit", {
+      method: "POST",
+      body: form,
+    });
+
+    if (error.value) {
+      throw new Error(error.value?.message || "Failed to submit form");
+    }
+
+    if (!data.value.success) {
+      throw new Error(
+        data.value?.message || "Failed to save data to spreadsheet"
+      );
+    }
+
+    // Reset form after successful submission
+    form.name = "";
+    form.lastName = "";
+    form.email = "";
+    form.subscribe = false;
+
+    // Show success message
+    submitSuccess.value = true;
+    setTimeout(() => {
+      submitSuccess.value = false;
+    }, 3000);
+  } catch (error) {
+    console.error("Form submission error:", error);
+    submitError.value = error.message;
+  } finally {
+    loading.value = false;
+  }
 };
 </script>
 
@@ -67,9 +106,42 @@ const submitForm = () => {
 .home-page {
   width: 100vw;
   height: 100vh;
+  position: relative;
+
+  .loading,
+  .success-message,
+  .error-message {
+    position: absolute;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    padding: 10px 20px;
+    border-radius: 5px;
+    font-weight: bold;
+  }
+
+  .loading {
+    background-color: #f5f5f5;
+  }
+
+  .success-message {
+    background-color: #dff0d8;
+    color: #3c763d;
+  }
+
+  .error-message {
+    background-color: #f2dede;
+    color: #a94442;
+  }
+
   .form {
-    width: css-clamp(300px, 800px);
+    width: max(300px, min(90%, 800px));
+    padding: 30px;
     border-radius: 10px;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+    background-color: white;
+    display: flex;
+    flex-direction: column;
 
     .input {
       width: 100%;
@@ -79,10 +151,29 @@ const submitForm = () => {
       border-radius: 5px;
     }
 
+    .checkbox-container {
+      display: flex;
+      align-items: center;
+      margin: 10px 0;
+
+      .checkbox-input {
+        margin-right: 10px;
+        width: auto;
+      }
+    }
+
     .button {
-      padding: 20px 40px;
+      padding: 15px 40px;
+      margin-top: 20px;
       background-color: var(--color-yellow);
       border-radius: 10px;
+      cursor: pointer;
+      border: none;
+      font-weight: bold;
+
+      &:hover {
+        opacity: 0.9;
+      }
     }
   }
 }

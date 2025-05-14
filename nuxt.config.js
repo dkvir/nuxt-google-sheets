@@ -6,8 +6,12 @@ export default defineNuxtConfig({
   devtools: { enabled: false },
   modules: ["@pinia/nuxt", "nuxt-icons", "@vueuse/nuxt", "@nuxtjs/device"],
   runtimeConfig: {
+    // Server-side variables (not exposed to the browser)
+    GOOGLE_SERVICE_ACCOUNT_EMAIL: process.env.GOOGLE_SERVICE_ACCOUNT_EMAIL,
+    GOOGLE_PRIVATE_KEY: process.env.GOOGLE_PRIVATE_KEY,
+
+    // Variables exposed to the browser
     public: {
-      GOOGLE_API_KEY: process.env.GOOGLE_API_KEY,
       SPREAD_SHEET_ID: process.env.SPREAD_SHEET_ID,
     },
   },
