@@ -69,6 +69,11 @@ const submitForm = async () => {
     });
     if (res.success) {
       submitSuccess.value = true;
+
+      form.name = "";
+      form.lastName = "";
+      form.email = "";
+      form.subscribe = false;
     }
   } catch (err) {
     console.error(err);
