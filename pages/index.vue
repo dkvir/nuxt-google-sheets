@@ -73,10 +73,12 @@ const submitForm = async () => {
     });
 
     if (error.value) {
+      console.error("API error:", error.value);
       throw new Error(error.value?.message || "Failed to submit form");
     }
 
     if (!data.value.success) {
+      console.error("API response error:", data.value);
       throw new Error(
         data.value?.message || "Failed to save data to spreadsheet"
       );
@@ -118,6 +120,8 @@ const submitForm = async () => {
     padding: 10px 20px;
     border-radius: 5px;
     font-weight: bold;
+    max-width: 80%;
+    word-break: break-word;
   }
 
   .loading {

@@ -10,7 +10,7 @@ export default defineEventHandler(async (event) => {
     const config = useRuntimeConfig();
     const SPREAD_SHEET_ID = config.public.SPREAD_SHEET_ID;
     const GOOGLE_SERVICE_ACCOUNT_EMAIL = config.GOOGLE_SERVICE_ACCOUNT_EMAIL;
-    const GOOGLE_PRIVATE_KEY = config.GOOGLE_PRIVATE_KEY.replace(/\\n/g, "\n");
+    const GOOGLE_PRIVATE_KEY = config.GOOGLE_PRIVATE_KEY;
 
     // Format the data for the Sheets API
     const values = [

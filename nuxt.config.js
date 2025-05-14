@@ -13,6 +13,7 @@ export default defineNuxtConfig({
     // Variables exposed to the browser
     public: {
       SPREAD_SHEET_ID: process.env.SPREAD_SHEET_ID,
+      GOOGLE_API_KEY: process.env.GOOGLE_API_KEY, // Expose API key to the browser
     },
   },
   app: {
