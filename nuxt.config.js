@@ -5,17 +5,7 @@ export default defineNuxtConfig({
   compatibilityDate: "2024-11-01",
   devtools: { enabled: false },
   modules: ["@pinia/nuxt", "nuxt-icons", "@vueuse/nuxt", "@nuxtjs/device"],
-  runtimeConfig: {
-    // Server-side variables (not exposed to the browser)
-    GOOGLE_SERVICE_ACCOUNT_EMAIL: process.env.GOOGLE_SERVICE_ACCOUNT_EMAIL,
-    GOOGLE_PRIVATE_KEY: process.env.GOOGLE_PRIVATE_KEY,
 
-    // Variables exposed to the browser
-    public: {
-      SPREAD_SHEET_ID: process.env.SPREAD_SHEET_ID,
-      GOOGLE_API_KEY: process.env.GOOGLE_API_KEY, // Expose API key to the browser
-    },
-  },
   app: {
     head: {
       meta: [

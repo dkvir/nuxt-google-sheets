@@ -1,10 +1,10 @@
 <template>
   <div class="home-page flex-center">
-    <div v-if="loading" class="loading">Submitting...</div>
+    <div v-if="loading" class="loading">Sending...</div>
     <div v-if="submitSuccess" class="success-message">
       Form submitted successfully!
     </div>
-    <div v-if="submitError" class="error-message">Error: {{ submitError }}</div>
+    <div v-if="submitError" class="error-message">{{ submitError }}</div>
     <form @submit.prevent="submitForm" class="form">
       <input
         v-model="form.name"
@@ -46,10 +46,6 @@
 </template>
 
 <script setup>
-import { allRows } from "@/composables/useSheet";
-
-const { data } = await allRows();
-
 const form = reactive({
   name: "",
   lastName: "",
@@ -62,42 +58,21 @@ const submitSuccess = ref(false);
 const submitError = ref(null);
 
 const submitForm = async () => {
-  try {
-    loading.value = true;
-    submitError.value = null;
+  loading.value = true;
+  submitSuccess.value = false;
+  submitError.value = null;
 
-    // Send data to our server API endpoint
-    const { data, error } = await useFetch("/api/submit", {
+  try {
+    const res = await $fetch("/api/submit", {
       method: "POST",
       body: form,
     });
-
-    if (error.value) {
-      console.error("API error:", error.value);
-      throw new Error(error.value?.message || "Failed to submit form");
+    if (res.success) {
+      submitSuccess.value = true;
     }
-
-    if (!data.value.success) {
-      console.error("API response error:", data.value);
-      throw new Error(
-        data.value?.message || "Failed to save data to spreadsheet"
-      );
-    }
-
-    // Reset form after successful submission
-    form.name = "";
-    form.lastName = "";
-    form.email = "";
-    form.subscribe = false;
-
-    // Show success message
-    submitSuccess.value = true;
-    setTimeout(() => {
-      submitSuccess.value = false;
-    }, 3000);
-  } catch (error) {
-    console.error("Form submission error:", error);
-    submitError.value = error.message;
+  } catch (err) {
+    console.error(err);
+    submitError.value = "Failed to submit.";
   } finally {
     loading.value = false;
   }
