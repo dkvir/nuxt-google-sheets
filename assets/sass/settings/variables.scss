@@ -1,0 +1,30 @@
+@use "sass:math";
+
+$default-window-width: 1920 !default;
+$default-window-height: 1080 !default;
+
+$default-timing-speed: 0.35s;
+$default-timing-func: cubic-bezier(0.33, 1, 0.68, 1);
+
+$square-size: 20px;
+
+$sizes: "xxs", "xs", "s", "m", "l", "xl", "xxl", "3xl", "4xl", "5xl";
+
+$colors: (
+  "transparent": transparent,
+  "black": #000,
+  "white": #fff,
+  "eleonor": #f9f9f9,
+  "yellow": #f6c45f,
+  "evex-blue": #028280,
+  "evex-gray": #7c7c7c,
+  "evex-green": #014e4d,
+  "border": #bdebe1,
+);
+
+$fonts: (
+  "evex-regular": "Evex-Regular",
+  "evex1001": "Evex1001",
+  "evexweb-regular": "evexweb-Regular",
+  "ping-regular": "PingRoundGeLVariable-Regular",
+);
